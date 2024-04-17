@@ -11,7 +11,7 @@ from botocore.exceptions import NoCredentialsError
 bucket_name = os.environ.get('PICKLE_S3_BUCKET_NAME')
 
 my_config = Config(
-    region_name = 'us-east-2',
+    region_name = 'us-east-1',
     signature_version = 's3v4'
 )
 

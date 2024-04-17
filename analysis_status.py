@@ -14,7 +14,7 @@ bucket_name = os.environ.get('AWS_S3_BUCKET_NAME')
 table_name = os.environ.get('RESULTS_TABLE')
 
 my_config = Config(
-    region_name = 'us-east-2',
+    region_name = 'us-east-1',
     signature_version = 's3v4'
 )
 
