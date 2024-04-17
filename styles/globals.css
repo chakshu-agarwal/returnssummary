@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  
+  /* Results Page Colors */
+  --results-page-bg: #000;
+  --results-page-text: #fff;
+  --results-table-bg: #fff;
+  --results-table-text: #000;
+  --results-table-header-bg: #f3f4f6;
+  --results-table-header-text: #000;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Results Page Utility Classes */
+  .bg-results-page {
+    background-color: var(--results-page-bg);
+  }
+  
+  .text-results-page {
+    color: var(--results-page-text);
+  }
+  
+  .bg-results-table {
+    background-color: var(--results-table-bg);
+  }
+  
+  .text-results-table {
+    color: var(--results-table-text);
+  }
+  
+  .bg-results-table-header {
+    background-color: var(--results-table-header-bg);
+  }
+  
+  .text-results-table-header {
+    color: var(--results-table-header-text);
+  }
+}
