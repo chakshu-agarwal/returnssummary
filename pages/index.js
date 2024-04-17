@@ -102,7 +102,7 @@ export default function Home() {
             Your privacy is our priority. We never store your credentials or data, and all information is securely erased after each session.
           </p>
           <p className="g italic">
-            View our <a href="https://github.com/chakshu-agarwal/rr-split" target="_blank" rel="noopener noreferrer" className="text-blue-500">code repository</a> to verify its safety and security, and provide feedback on how we can improve it further.
+            View our <a href="https://github.com/chakshu-agarwal/returnssummary" target="_blank" rel="noopener noreferrer" className="text-blue-500">code repository</a> to verify its safety and security, and provide feedback on how we can improve it further.
           </p>
         </div>
       </div>
