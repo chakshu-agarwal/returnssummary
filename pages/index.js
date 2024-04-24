@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-
+import { FaSpinner } from 'react-icons/fa';
 
 export default function Home() {
   const [loginData, setLoginData] = useState({
