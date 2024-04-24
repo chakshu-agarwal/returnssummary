@@ -22,9 +22,11 @@ export default function Home() {
     return randomNumber.toString().padStart(4, '0');
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     // Concatenate a random string with user email
     const user_token = loginData.email + generateRandomString();
 
@@ -48,14 +50,17 @@ export default function Home() {
         // Handle successful login here. Possibly redirect or set some auth state.
         console.log('Login successful:', data);
         sessionStorage.setItem('userToken', user_token);
+        setIsLoading(false);
         router.push('/analysisinput');
       } else {
         // Handle errors, for example, show an error message to the user
+        setIsLoading(false);
         console.log('Login failed:', data.message);
         window.alert('Login Failed: ' + data.message);
       }
     } catch (error) {
       // Catch network errors or issues with the fetch call
+      setIsLoading(false);
       console.error('There was an error with the login request:', error);
       window.alert('There was an error with the login request: ' + error);
     }
@@ -69,11 +74,17 @@ export default function Home() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-black text-white">
+      {isLoading && ( // Conditional rendering based on isLoading
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <FaSpinner className="animate-spin text-4xl text-white" />
+          <p className="text-white text-lg mt-4">Logging In...</p>
+        </div>
+      )}
       {/* Left Side */}
       <div className="md:w-1/2 flex flex-col justify-center p-12 space-y-6">
         <h1 className="text-5xl font-bold">Realized Returns Summary</h1>
         <p className="text-xl">
-          Unlock the power of your Robinhood trading data with our intuitive web app. Easily log in with your Robinhood credentials to access a comprehensive summary of your realized and unrealized gains and losses.
+          Unlock the power of your Robinhood trading data with our intuitive web app. Easily log in with your Robinhood credentials (requires 2FA with authenticator app or SMS) to access a comprehensive summary of your realized and unrealized gains and losses.
         </p>
         <div className="space-y-1">
           <p className="text-xl font-bold">Key Features:</p>
