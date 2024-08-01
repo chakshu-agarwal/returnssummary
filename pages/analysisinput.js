@@ -53,7 +53,7 @@ const AnalysisInput = () => {
       const analysisData = await response.json();
       if (response.ok) {
         let startTime = Date.now();
-        const timeout = 720000; // Timeout after 12 minutes
+        const timeout = 1200000; // Timeout after 20 minutes
 
         const pollStatus = setInterval(async () => {
           const elapsedTime = Date.now() - startTime;
