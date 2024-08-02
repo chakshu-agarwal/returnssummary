@@ -53,7 +53,7 @@ const AnalysisInput = () => {
       const analysisData = await response.json();
       if (response.ok) {
         let startTime = Date.now();
-        const timeout = 1200000; // Timeout after 20 minutes
+        const timeout = 2700000; // Timeout after 45 minutes
 
         const pollStatus = setInterval(async () => {
           const elapsedTime = Date.now() - startTime;
@@ -90,7 +90,7 @@ const AnalysisInput = () => {
           } else if (statusData.status === 'Pending') {
               console.log('Analysis is still processing.');
           }
-        }, 15000); // check every 15 seconds
+        }, 60000); // check every 60 seconds
       } else {
         setIsLoading(false);
         console.error(analysisData.status + " " + analysisData.message);
