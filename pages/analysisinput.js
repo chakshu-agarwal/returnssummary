@@ -54,6 +54,7 @@ const AnalysisInput = () => {
       if (response.ok) {
         let startTime = Date.now();
         const timeout = 2700000; // Timeout after 45 minutes
+        console.log("Timeout is set to:", timeout);
 
         const pollStatus = setInterval(async () => {
           const elapsedTime = Date.now() - startTime;
@@ -61,6 +62,7 @@ const AnalysisInput = () => {
             clearInterval(pollStatus);
             setIsLoading(false);
             console.error('Analysis Function timeout');
+            console.log("Timeout expired at:", elapsedTime);
             window.alert('Analysis function time out reached, please try again!')
             return;
           }
