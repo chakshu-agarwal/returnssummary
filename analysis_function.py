@@ -42,12 +42,25 @@ def generate_presigned_url(bucket, s3_file_name):
     except ClientError as e:
         return None
 
+# List of allowed origins
+ALLOWED_ORIGINS = [
+    'https://rr-frontend-psi.vercel.app',
+    'https://www.returnssummary.com',
+    'https://rr-split-chakshu-agarwals-projects.vercel.app',
+    'http://localhost:3000'  # For local development
+]
 
 def lambda_handler(event, context):
     start_date = event.get('start_date')
     end_date = event.get('end_date')
     user_token = event.get('user_token')
 
+    # Get the origin from the request headers
+    origin = event.get('headers', {}).get('Origin') or event.get('headers', {}).get('origin')
+
+    # Check if the origin is allowed
+    if origin not in ALLOWED_ORIGINS:
+        origin = ALLOWED_ORIGINS[0]  # Default to the first allowed origin if not matched
 
     # Login to Robinhood using pickle file 
     try:
@@ -58,7 +71,7 @@ def lambda_handler(event, context):
         return {
             'statusCode': 404,
             'headers': {
-                'Access-Control-Allow-Origin': 'https://www.returnssummary.com/analysisinput',
+                'Access-Control-Allow-Origin': origin,
                 'Access-Control-Allow-Methods': 'POST,OPTIONS,HEAD',
                 'Access-Control-Allow-Headers': 'content-type'
             },
@@ -81,7 +94,7 @@ def lambda_handler(event, context):
         csv_buffer = StringIO()
         summary.to_csv(csv_buffer, index=False)
         csv_buffer.seek(0)
-        object_name = f'returns_summary_{user_token}.csv'
+        object_name = f'returns_summary_{user_token}.csv' #if sanitized_email_address else f'returns_summary_{random_string}.csv'
         # Upload CSV to S3
         s3_client.put_object(Bucket=bucket_name, Key=object_name, Body=csv_buffer.getvalue())
 

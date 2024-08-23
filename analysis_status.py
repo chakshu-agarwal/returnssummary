@@ -36,10 +36,24 @@ class DecimalEncoder(json.JSONEncoder):
             return float(obj)
         return super(DecimalEncoder, self).default(obj)
 
+# List of allowed origins
+ALLOWED_ORIGINS = [
+    'https://rr-frontend-psi.vercel.app',
+    'https://www.returnssummary.com',
+    'https://rr-split-chakshu-agarwals-projects.vercel.app',
+    'http://localhost:3000'  # For local development
+]
 
 def lambda_handler(event, context):
     body = json.loads(event.get('body', '{}'))
     user_token = body.get("user_token")
+
+    # Get the origin from the request headers
+    origin = event.get('headers', {}).get('Origin') or event.get('headers', {}).get('origin')
+
+    # Check if the origin is allowed
+    if origin not in ALLOWED_ORIGINS:
+        origin = ALLOWED_ORIGINS[0]  # Default to the first allowed origin if not matched
 
     # CHeck if the table has data for the user_token. If not, return status pending. If yes, return the Result
     try:
@@ -53,7 +67,7 @@ def lambda_handler(event, context):
         return {
             'statusCode': 200,
             'headers': {
-                'Access-Control-Allow-Origin': 'https://www.returnssummary.com',
+                'Access-Control-Allow-Origin': origin,
                 'Access-Control-Allow-Methods': 'POST,OPTIONS,HEAD',
                 'Access-Control-Allow-Headers': 'content-type'
             },
@@ -64,7 +78,7 @@ def lambda_handler(event, context):
         return {
             'statusCode': 500,
             'headers': {
-                'Access-Control-Allow-Origin': 'https://www.returnssummary.com',
+                'Access-Control-Allow-Origin': origin,
                 'Access-Control-Allow-Methods': 'POST,OPTIONS,HEAD',
                 'Access-Control-Allow-Headers': 'content-type'
             },

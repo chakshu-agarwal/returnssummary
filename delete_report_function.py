@@ -24,11 +24,25 @@ try:
 except NoCredentialsError:
     print("AWS Log In Issue")
 
+# List of allowed origins
+ALLOWED_ORIGINS = [
+    'https://rr-frontend-psi.vercel.app',
+    'https://www.returnssummary.com',
+    'https://rr-split-chakshu-agarwals-projects.vercel.app',
+    'http://localhost:3000'  # For local development
+]
 
 def lambda_handler(event, context):
     body = json.loads(event.get('body', '{}'))
     object_name = body.get("object_name")
     user_token = body.get("user_token")
+
+    # Get the origin from the request headers
+    origin = event.get('headers', {}).get('Origin') or event.get('headers', {}).get('origin')
+
+    # Check if the origin is allowed
+    if origin not in ALLOWED_ORIGINS:
+        origin = ALLOWED_ORIGINS[0]  # Default to the first allowed origin if not matched
 
     # Extract s3 pickle_name from object_name
     if user_token is None:
@@ -39,7 +53,6 @@ def lambda_handler(event, context):
         # Try to delete pickle file from S3
         try:
             s3_client.delete_object(Bucket=pickle_bucket_name, Key=s3_file_name)
-            logging.info('Deleted pickle file: %s', s3_file_name)
             pass
         except ClientError as e:
             logging.error('Error in deleting pickle file: %s', e, exc_info=True)
@@ -50,7 +63,7 @@ def lambda_handler(event, context):
         return {
             'statusCode': 200,
             'headers': {
-                'Access-Control-Allow-Origin': 'https://www.returnssummary.com',
+                'Access-Control-Allow-Origin': origin,
                 'Access-Control-Allow-Methods': 'POST,OPTIONS,HEAD',
                 'Access-Control-Allow-Headers': 'content-type'
             },
@@ -61,7 +74,7 @@ def lambda_handler(event, context):
         return {
             'statusCode': 500,
             'headers': {
-                'Access-Control-Allow-Origin': 'https://www.returnssummary.com',
+                'Access-Control-Allow-Origin': origin,
                 'Access-Control-Allow-Methods': 'POST,OPTIONS,HEAD',
                 'Access-Control-Allow-Headers': 'content-type'
             },

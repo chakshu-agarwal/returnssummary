@@ -25,6 +25,13 @@ try:
 except NoCredentialsError:
     print("AWS Log In Issue")
 
+# List of allowed origins
+ALLOWED_ORIGINS = [
+    'https://rr-frontend-psi.vercel.app',
+    'https://www.returnssummary.com',
+    'https://rr-split-chakshu-agarwals-projects.vercel.app',
+    'http://localhost:3000'  # For local development
+]
 
 def lambda_handler(event, context):
     pickle_name = event.get('user_token')
@@ -37,12 +44,19 @@ def lambda_handler(event, context):
         except ClientError as e:
             logging.error('Error in deleting object: %s', e, exc_info=True)
 
+    # Get the origin from the request headers
+    origin = event.get('headers', {}).get('Origin') or event.get('headers', {}).get('origin')
+
+    # Check if the origin is allowed
+    if origin not in ALLOWED_ORIGINS:
+        origin = ALLOWED_ORIGINS[0]  # Default to the first allowed origin if not matched
+
     try:
         s3_client.delete_object(Bucket=bucket_name, Key=s3_file_name)
         return {
             'statusCode': 200,
             'headers': {
-                'Access-Control-Allow-Origin': 'https://www.returnssummary.com/analysisinput',
+                'Access-Control-Allow-Origin': origin,
                 'Access-Control-Allow-Methods': 'POST,OPTIONS,HEAD',
                 'Access-Control-Allow-Headers': 'content-type'
             },
@@ -53,7 +67,7 @@ def lambda_handler(event, context):
         return {
             'statusCode': 500,
             'headers': {
-                'Access-Control-Allow-Origin': 'https://www.returnssummary.com/analysisinput',
+                'Access-Control-Allow-Origin': origin,
                 'Access-Control-Allow-Methods': 'POST,OPTIONS,HEAD',
                 'Access-Control-Allow-Headers': 'content-type'
             },
