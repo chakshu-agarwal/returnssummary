@@ -163,7 +163,7 @@ def perform_investment_analysis(data, start_date=None, end_date=None):
 
   try: 
     # Initialize the summary table
-    summary_table = pd.DataFrame(columns=['symbol', 'quantity_purchased', 'investment_amount', 'quantity_sold', 'return_amount', 'realized_gain_loss', 'unrealized_gain_loss'])
+    summary_table = pd.DataFrame(columns=['symbol', 'quantity_purchased', 'investment_amount', 'quantity_sold', 'return_amount', 'realized_gain_loss', 'unrealized_gain_loss', 'current_position_size'])
 
     # Adjust data for stock splits
     data = adjust_for_stock_splits(data)
@@ -246,11 +246,13 @@ def perform_investment_analysis(data, start_date=None, end_date=None):
 
         # Calculate unrealized returns only for those symbols that were bought in the user defined period
         unrealized_gain_loss = 0
+        current_position_size = 0
         for index, after_buy_order in after_buy_orders.iterrows():
             if after_buy_order['quantity'] > 0:  # Only unsold shares are considered
                 current_price_per_unit = after_symbol_data.iloc[-1]['latest_price']
                 buy_price_per_unit = after_buy_order['unit_price']
                 unrealized_gain_loss += (current_price_per_unit - buy_price_per_unit) * after_buy_order['quantity']
+                current_position_size += current_price_per_unit * after_buy_order['quantity']
     
         # Append corrected data to the summary table
         summary_table = pd.concat([summary_table, pd.DataFrame({
@@ -260,10 +262,9 @@ def perform_investment_analysis(data, start_date=None, end_date=None):
             'quantity_sold': [total_quantity_sold],
             'return_amount': [total_return_amount],
             'realized_gain_loss': [realized_gains_losses],
-            'unrealized_gain_loss': [unrealized_gain_loss]
+            'unrealized_gain_loss': [unrealized_gain_loss],
+            'current_position_size': [current_position_size]
         })], ignore_index=True)
-      
-      return summary_table
     
     else:
     # Filter data for the user-defined period
@@ -312,11 +313,13 @@ def perform_investment_analysis(data, start_date=None, end_date=None):
 
         # Adjust calculation for unrealized gains/losses
         unrealized_gain_loss = 0
+        current_position_size = 0
         for index, buy_order in buy_orders.iterrows():
             if buy_order['quantity'] > 0:  # Only unsold shares are considered
                 current_price_per_unit = symbol_data.iloc[-1]['latest_price']
                 buy_price_per_unit = buy_order['unit_price']
                 unrealized_gain_loss += (current_price_per_unit - buy_price_per_unit) * buy_order['quantity']
+                current_position_size += current_price_per_unit * after_buy_order['quantity']
 
         # Append corrected data to the summary table
         summary_table = pd.concat([summary_table, pd.DataFrame({
@@ -326,10 +329,21 @@ def perform_investment_analysis(data, start_date=None, end_date=None):
             'quantity_sold': [total_quantity_sold],
             'return_amount': [total_return_amount],
             'realized_gain_loss': [realized_gains_losses],
-            'unrealized_gain_loss': [unrealized_gain_loss]
+            'unrealized_gain_loss': [unrealized_gain_loss],
+            'current_position_size': [current_position_size]
         })], ignore_index=True)
 
-      return summary_table
+    # Initialize total portfolio value
+    total_portfolio_value = 0
+
+    # Calculate total portfolio value
+    total_portfolio_value = summary_table['current_position_size'].sum()
+
+    # Add position size percentage column
+    summary_table['position_size_percentage'] = summary_table['current_position_size'] / total_portfolio_value * 100
+
+    
+    return summary_table
   
   except Exception as e:
     logging.error("Error in get_all_orders: %s", e, exc_info=True)

@@ -39,6 +39,8 @@ class DecimalEncoder(json.JSONEncoder):
 # List of allowed origins
 ALLOWED_ORIGINS = [
     'https://rr-frontend-psi.vercel.app',
+    'https://returnssummary.cc',
+    'https://www.returnssummary.cc',
     'https://www.returnssummary.com',
     'https://rr-split-chakshu-agarwals-projects.vercel.app',
     'http://localhost:3000'  # For local development
