@@ -81,11 +81,19 @@ export default function Home() {
         </div>
       )}
       {/* Left Side */}
+
       <div className="md:w-1/2 flex flex-col justify-center p-12 space-y-6">
         <h1 className="text-5xl font-bold">Realized Returns Summary</h1>
-        <p className="text-xl">
-          Unlock the power of your Robinhood trading data with our intuitive web app. Easily log in with your Robinhood credentials (requires 2FA with authenticator app or SMS) to access a comprehensive summary of your realized and unrealized gains and losses.
-        </p>
+        <div className="mt-auto space-y-2">
+          <p className="g italic font-bold">
+            This app is NOT affiliated with or endorsed by Robinhood Markets Inc.
+          </p>
+        </div>
+        <div className="space-y-1">
+          <p className="text-xl">
+            Unlock the power of your Robinhood trading data with our intuitive web app. Easily log in with your Robinhood credentials (requires 2FA with authenticator app or SMS) to access a comprehensive summary of your realized and unrealized gains and losses.
+          </p>
+        </div>
         <div className="space-y-1">
           <p className="text-xl font-bold">Key Features:</p>
           <ul className="text-xl list-disc list-inside">
@@ -103,12 +111,9 @@ export default function Home() {
           </ul>
         </div>
         <p className="text-xl">
-          Log in now and take control of your Robinhood data today!
+          Log in now with your Robinhood credentials and take control of your data today!
         </p>
         <div className="mt-auto space-y-2">
-          <p className="g italic">
-            This app is not affiliated with or endorsed by Robinhood Markets Inc.
-          </p>
           <p className="g italic">
             Your privacy is our priority. We never store your credentials or data, and all information is securely erased after each session.
           </p>
@@ -121,7 +126,7 @@ export default function Home() {
       {/* Right Side */}
       <div className="flex-1 flex items-center justify-center">
         <div className="bg-white text-black w-full max-w-md mx-auto p-8 rounded-lg">
-          <h2 className="text-3xl font-bold mb-10">Log in to Robinhood</h2>
+          <h2 className="text-3xl font-bold mb-10">Log in</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="text-sm font-bold">Email</label>
